@@ -1,0 +1,18 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: nacos:8848
+#    gateway:
+#      routes:
+#        - id: question_bank_composite
+#          uri: lb://question-bank-composite
+#          predicates:
+#            - Path=/question_bank/**
+#          filters:
+#            - StripPrefix=1
+
+debug: true

@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: question-bank-composite
+  cloud:
+    nacos:
+      discovery:
+        server-addr: nacos:8848
+
+server:
+  port: 7000

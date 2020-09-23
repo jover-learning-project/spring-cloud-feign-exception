@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: question_bank_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_USER: 'zadik'
+      MYSQL_PASSWORD: 'zadik'
+      MYSQL_ROOT_HOST: '0.0.0.0'
+    volumes:
+      - ./mysql/init:/docker-entrypoint-initdb.d
+      - question_bank_mysql:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  #  redis:
+  #    image: redis:6
+  #    container_name: question_bank_redis
+  #    ports:
+  #      - 6379:6379
+  #
+  #  elasticsearch:
+  #    image: elasticsearch:7.8.0
+  #    environment:
+  #      - discovery.type=single-node
+  #    ports:
+  #      - 9200:9200
+  #    volumes:
+  #      - question_bank_elasticsearch:/usr/share/elasticsearch/data
+  #      - ./elasticsearch/plugins:/usr/share/elasticsearch/plugins
+  #
+  #  kibana:
+  #    image: kibana:7.8.0
+  #    ports:
+  #      - 5601:5601
+
+  nacos:
+    depends_on:
+      - mysql
+    image: nacos/nacos-server:1.3.2
+    container_name: question_bank_nacos
+    environment:
+      PREFER_HOST_MODE: 'hostname'
+      MODE: 'standalone'
+      SPRING_DATASOURCE_PLATFORM: 'mysql'
+      MYSQL_SERVICE_HOST: 'mysql'
+      MYSQL_SERVICE_DB_NAME: 'nacos_config'
+      MYSQL_SERVICE_PORT: '3306'
+      MYSQL_SERVICE_USER: 'zadik'
+      MYSQL_SERVICE_PASSWORD: 'zadik'
+    ports:
+      - 8848:8848
+
+volumes:
+  question_bank_mysql:
+    external: true
+  question_bank_elasticsearch:
+    external: true
+  question_bank_mongodb:
+    external: true

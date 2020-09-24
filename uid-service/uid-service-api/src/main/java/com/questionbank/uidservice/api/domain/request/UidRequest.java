@@ -2,6 +2,7 @@ package com.questionbank.uidservice.api.domain.request;
 
 import lombok.Data;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -13,9 +14,12 @@ import java.io.Serializable;
 @Data
 public class UidRequest implements Serializable {
 
+    @NotNull
+    @Min(0)
     Long datacenterId;
 
     @NotNull
+    @Min(0)
     Long machineId;
 
 }

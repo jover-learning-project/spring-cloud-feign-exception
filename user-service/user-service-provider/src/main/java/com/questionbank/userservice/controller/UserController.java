@@ -26,16 +26,15 @@ public class UserController {
 
     @GetMapping
     public Long get(UidRequest uidRequest) {
-        System.out.println("uidRequest = " + uidRequest);
-        System.out.println("errorDecoder = " + errorDecoder + errorDecoder.getClass());
-
         Long id;
         try {
             id = uidService.getId(uidRequest);
         } catch (UidGenerateException e) {
-            id = 20000L;
-        } catch (ValidationException e) {
+            System.err.println("UidGenerateException: " + e);
             id = 0L;
+        } catch (ValidationException e) {
+            System.err.println("ValidationException: " + e);
+            id = 1L;
         }
         return id;
     }

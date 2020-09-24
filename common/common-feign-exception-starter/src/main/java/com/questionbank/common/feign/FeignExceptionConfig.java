@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.questionbank.common.feign.comsumer.handler.FeignExceptionConsumerErrorDecoder;
 import com.questionbank.common.feign.provider.config.FeignExceptionProviderHandler;
 import feign.codec.ErrorDecoder;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,32 +19,28 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FeignExceptionConfig {
 
-    @Value("${feign-exception.debug:false}")
+    private static final String PROPERTY_PREFIX = "feign-exception";
+
+    @Value("${" + PROPERTY_PREFIX + ".debug:false}")
     private Boolean debug;
 
-    @Value("feign-exception.provider.enable:true")
-    private Boolean enableProvider;
-
-//    @Value("feign-exception.consumer.enable:true")
-//    private Boolean enableConsumer;
 
     @Bean
-    @ConditionalOnProperty("feign-exception.consumer.enable")
-    public ErrorDecoder feignExceptionConsumerErrorDecoder() {
-        System.out.println("debug = " + debug);
+    @ConditionalOnProperty(prefix = PROPERTY_PREFIX, value = "provider.enable", havingValue = "true", matchIfMissing = true)
+    public FeignExceptionProviderHandler feignExceptionProviderHandler() {
         if (debug) {
-            log.info("Load FeignExceptionConsumerErrorDecoder");
+            log.info("Load FeignExceptionProviderHandler");
         }
-        return new FeignExceptionConsumerErrorDecoder(new ObjectMapper());
+        return new FeignExceptionProviderHandler().setDebug(debug);
     }
 
     @Bean
-    public FeignExceptionProviderHandler feignExceptionProviderHandler() {
-        log.info("debug = " + debug);
+    @ConditionalOnProperty(prefix = PROPERTY_PREFIX, value = "consumer.enable", havingValue = "true", matchIfMissing = true)
+    public ErrorDecoder feignExceptionConsumerErrorDecoder() {
         if (debug) {
             log.info("Load FeignExceptionConsumerErrorDecoder");
         }
-        return new FeignExceptionProviderHandler();
+        return new FeignExceptionConsumerErrorDecoder(new ObjectMapper()).setDebug(debug);
     }
 
 }

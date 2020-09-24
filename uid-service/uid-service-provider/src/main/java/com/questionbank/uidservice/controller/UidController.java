@@ -17,11 +17,10 @@ public class UidController implements UidApi {
 
     @Override
     public Long getId(UidRequest uidRequest) throws UidGenerateException {
-        System.out.println("uidRequest = " + uidRequest);
-        if (uidRequest.getDatacenterId().equals(200L)) {
+        if (uidRequest.getDatacenterId().equals(100L)) {
             throw new UidGenerateException("error");
         }
-        return 1000L;
+        return 999L;
     }
 
 }

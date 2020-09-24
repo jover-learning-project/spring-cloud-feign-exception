@@ -23,8 +23,15 @@ public class FeignExceptionConsumerErrorDecoder implements ErrorDecoder {
 
     private final ObjectMapper mapper;
 
+    private boolean debug;
+
     public FeignExceptionConsumerErrorDecoder(ObjectMapper mapper) {
         this.mapper = mapper;
+    }
+
+    public FeignExceptionConsumerErrorDecoder setDebug(boolean debug) {
+        this.debug = debug;
+        return this;
     }
 
     /**
@@ -41,12 +48,18 @@ public class FeignExceptionConsumerErrorDecoder implements ErrorDecoder {
      */
     @Override
     public Exception decode(String methodKey, Response response) {
+        if (debug) {
+            log.info("方法: " + methodKey);
+        }
         Exception exception;
         try {
             String body = Util.toString(response.body().asReader(Charset.defaultCharset()));
             FeignCustomException<?> feignCustomException = mapper.readValue(body, FeignCustomException.class);
 
             Class<?> exceptionClazz = feignCustomException.getClazz();
+            if (debug) {
+                log.info("异常: " + feignCustomException.getException());
+            }
             exception = (Exception) exceptionClazz.getConstructor().newInstance();
             BeanUtils.copyProperties(feignCustomException.getException(), exception);
         } catch (IOException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {

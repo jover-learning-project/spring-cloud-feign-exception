@@ -1,6 +1,8 @@
 package com.questionbank.common.feign.provider.config;
 
+import com.questionbank.common.feign.exception.BusinessException;
 import com.questionbank.common.feign.exception.FeignCustomException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -14,17 +16,26 @@ import javax.validation.ValidationException;
  *
  * @author Jover Zhang
  */
+@Slf4j
 @RestControllerAdvice
 public class FeignExceptionProviderHandler {
 
+    private boolean debug;
+
+    public FeignExceptionProviderHandler setDebug(boolean debug) {
+        this.debug = debug;
+        return this;
+    }
+
     /**
-     * FIXME: 捕获粗度略大，待定。
-     * <p>
-     * 全局异常捕获。
+     * 业务异常捕获。{@link BusinessException}
      */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<FeignCustomException<?>> handlerException(Exception e) {
-        FeignCustomException<Exception> exception = new FeignCustomException<>(e.getClass(), e);
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<FeignCustomException<?>> handlerException(BusinessException e) {
+        if (debug) {
+            log.info("业务异常：" + e.toString());
+        }
+        FeignCustomException<BusinessException> exception = new FeignCustomException<>(e.getClass(), e);
         return new ResponseEntity<>(exception, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -35,6 +46,9 @@ public class FeignExceptionProviderHandler {
      */
     @ExceptionHandler(BindException.class)
     public ResponseEntity<FeignCustomException<?>> handlerValidationException(BindException e) {
+        if (debug) {
+            log.info("参数异常：" + e.toString());
+        }
         ValidationException validationException = new ValidationException(e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         FeignCustomException<ValidationException> exception = new FeignCustomException<>(ValidationException.class, validationException);
         return new ResponseEntity<>(exception, HttpStatus.INTERNAL_SERVER_ERROR);

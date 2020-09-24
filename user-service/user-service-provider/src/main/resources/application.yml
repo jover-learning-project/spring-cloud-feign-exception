@@ -6,11 +6,7 @@ spring:
     name: user-service-provider
   cloud:
     nacos:
-      server-addr: nacos:8848
+      server-addr: localhost:8848
 
 feign-exception:
   debug: true
-  provider:
-    enable: true
-  consumer:
-    enable: true

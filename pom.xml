@@ -14,7 +14,7 @@
     <module>uid-service/uid-service-provider</module>
     <module>uid-service/uid-service-api</module>
     <module>user-service/user-service-api</module>
-    <module>common/common-feign-exception</module>
+    <module>common/common-feign-exception-starter</module>
   </modules>
   <packaging>pom</packaging>
 

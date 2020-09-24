@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "feign-exception.debug",
+      "type": "java.lang.Boolean",
+      "deprecation": "enable debug logs"
+    },
+    {
+      "name": "feign-exception.provider.enable",
+      "type": "java.lang.Boolean",
+      "deprecation": "开启捕获并封装provider抛出的异常"
+    },
+    {
+      "name": "feign-exception.consumer.enable",
+      "type": "java.lang.Boolean",
+      "deprecation": "开启捕获consumer接收到的异常"
+    }
+  ]
+}
